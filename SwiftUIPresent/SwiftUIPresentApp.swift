@@ -11,7 +11,7 @@ import SwiftUI
 struct SwiftUIPresentApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            LazyStackView()
         }
     }
 }

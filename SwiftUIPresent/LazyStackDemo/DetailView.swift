@@ -1,52 +1,4 @@
-//
-//  ContentView.swift
-//  SwiftUIPresent
-//
-//  Created by Samu András on 2022. 01. 08..
-//
-
 import SwiftUI
-
-struct ContentView: View {
-    @Namespace private var namespace
-    @State var isClicked = false
-    @State var selected: Int? = nil
-
-    var body: some View {
-        ZStack {
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack {
-                    ForEach(0..<10){ item in
-                        if selected != item {
-                            RoundedRectangle(cornerRadius: 25.0)
-                                .matchedGeometryEffect(id: item, in: namespace)
-                                .frame(width: 100, height: 100)
-                                .onTapGesture {
-                                    withAnimation(.easeInOut) {
-                                        selected = item
-                                    }
-                                }
-                        } else {
-                            Color.clear
-                                .frame(width: 100, height: 100)
-                        }
-                    }
-                }
-            }
-
-            if let id = selected {
-                DetailView(namespace: namespace, selected: $selected, id: id)
-            }
-        }
-
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
 
 struct DetailView: View {
     let namespace: Namespace.ID
@@ -61,9 +13,16 @@ struct DetailView: View {
                     .foregroundColor(.white)
                     .shadow(radius: 12.0)
                 VStack {
-                    RoundedRectangle(cornerRadius: 25.0)
-                        .matchedGeometryEffect(id: id, in: namespace)
-                        .frame(maxHeight: 100)
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 25.0)
+                            .matchedGeometryEffect(id: id, in: namespace)
+                            .frame(maxHeight: 100)
+                        Text(String(id))
+                            .font(.title)
+                            .foregroundColor(.white)
+                            .matchedGeometryEffect(id: String("\(id)label"), in: namespace)
+                    }
+
                     HStack {
                         VStack(alignment: .leading){
                             Text("Title")
@@ -121,3 +80,11 @@ extension DetailView {
     }
 }
 
+struct DetailView_Previews: PreviewProvider {
+    @Namespace private static var namespace
+    @State static var selected: Int? = 1
+
+    static var previews: some View {
+        DetailView(namespace: namespace, selected: $selected, id: 1)
+    }
+}
